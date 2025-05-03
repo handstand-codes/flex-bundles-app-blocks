@@ -7,14 +7,10 @@ This repository contains the official app blocks used in the Flex Bundles app. T
 The repository contains two types of blocks:
 
 1. **Fixed Blocks** (`fixed-v1.liquid`)
-   - Predefined bundle configurations
-   - Static pricing and product combinations
-   - Ideal for stores with consistent bundle offerings
+   - Used with fixed product and fixed variant bundles
 
 2. **Dynamic Blocks** (`dynamic-v1.liquid`)
-   - Flexible bundle configurations
-   - Dynamic pricing based on selected products
-   - Perfect for stores offering customizable bundles
+   - Used with dynamic bundles
 
 ## Directory Structure
 
@@ -33,27 +29,13 @@ The repository contains two types of blocks:
 You can use these blocks as a reference to understand:
 - How to structure your own bundle implementations
 - Best practices for handling bundle logic
-- Integration patterns with Shopify's Liquid templating
+- Integration patterns with Shopify's Liquid templating, and demonstrating how we access the bundle configuration metafield data
 
 ### Direct Implementation
 You can directly copy and use these blocks in your own projects by:
-1. Copying the desired block file from the `blocks/` directory, and adding it as a section in the `sections/` directory within your theme. (Make sure to add)
+1. Copying the desired block file from the `blocks/` directory, and adding it as a section in the `sections/` directory within your theme.
 2. Add the assets and snippets to your theme's `assets/` and `snippets/` directories respectively.
 3. Customizing the section to match your specific needs.
-
-## Features
-
-### Fixed Blocks
-- Pre-configured bundle options
-- Static pricing structure
-- Simple implementation
-- Easy to maintain
-
-### Dynamic Blocks
-- Flexible product selection
-- Dynamic pricing calculations
-- Customizable bundle rules
-- Advanced configuration options
 
 ## Getting Started
 
@@ -92,3 +74,5 @@ These blocks are provided as-is for reference and implementation purposes.
 ## Contributing
 
 While these are official app blocks, we welcome feedback and suggestions for improvements. Please create an issue or pull request if you have enhancements to propose. 
+
+In the future, as I add improvements, I'm going to add versioned releases for reference purposes.
