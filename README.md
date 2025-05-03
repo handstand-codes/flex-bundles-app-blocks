@@ -73,5 +73,3 @@ These blocks are provided as-is for reference and implementation purposes.
 ## Contributing
 
 While these are official app blocks, we welcome feedback and suggestions for improvements. Please create an issue or pull request if you have enhancements to propose. 
-
-As we add improvements, we're going to add versioned releases for reference purposes.
