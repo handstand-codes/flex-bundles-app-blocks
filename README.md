@@ -1,6 +1,6 @@
 # Flex Bundles App Blocks
 
-This repository contains the official app blocks used in the Flex Bundles app. These blocks are designed to be used as reference implementations or can be directly copied and customized for your own projects.
+This repository contains the official app blocks used in the Flex Bundles app. These blocks can be directly copied and customized for your own projects, or simply used as a reference.
 
 ## Overview
 
