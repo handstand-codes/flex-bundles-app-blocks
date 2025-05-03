@@ -19,8 +19,7 @@ The repository contains two types of blocks:
 │   ├── fixed-v1.liquid  # Fixed bundle implementation
 │   └── dynamic-v1.liquid # Dynamic bundle implementation
 ├── assets/              # Supporting assets (images, styles, etc.)
-├── snippets/            # Reusable code snippets
-└── .gitignore          # Git ignore configuration
+└── snippets/            # Reusable code snippets
 ```
 
 ## Usage
