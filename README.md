@@ -32,9 +32,9 @@ You can use these blocks as a reference to understand:
 
 ### Direct Implementation
 You can directly copy and use these blocks in your own projects by:
-1. Copying the desired block file from the `blocks/` directory, and adding it as a section in the `sections/` directory within your theme.
-2. Add the assets and snippets to your theme's `assets/` and `snippets/` directories respectively.
-3. Customizing the section to match your specific needs.
+1. Copying the desired block file from the `blocks/` directory, and adding it as a section in the `sections/` directory within your theme
+2. Add the assets and snippets to your theme's `assets/` and `snippets/` directories respectively
+3. Customizing the section to match your specific needs
 
 ## Getting Started
 
