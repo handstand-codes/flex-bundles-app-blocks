@@ -1,6 +1,11 @@
 {% assign config = product.metafields.flex_bundles.config.value %}
 {% assign components = config.components %}
 
+{% comment %}
+  if using this block as a section, add this line:
+  {% assign block = section %}
+{% endcomment %}
+
 {% capture flex_bundles_notice %}
   {% if request.design_mode %}
     {% render 'flex-bundles-notice', type: 'Fixed Bundle' %}
