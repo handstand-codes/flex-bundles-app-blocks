@@ -1,0 +1,37 @@
+<div class="flex-bundles__summary" role="region" aria-label="Bundle summary">
+  <h3 class="flex-bundles__summary-title">{{ block.settings.summary_box_title }}</h3>
+  <div class="flex-bundles__summary-items" js-flex-bundles-summary-items data-empty="true">
+    <!-- Summary items will be populated by JavaScript -->
+  </div>
+  <div class="flex-bundles__summary-totals">
+    <div class="flex-bundles__summary-row" js-flex-bundles-summary-subtotal-row>
+      <span class="flex-bundles__summary-label" id="subtotal-label-{{ block.id }}">Subtotal</span>
+      <span
+        class="flex-bundles__summary-value"
+        aria-labelledby="subtotal-label-{{ block.id }}"
+        js-flex-bundles-summary-subtotal
+      ></span>
+    </div>
+    <div class="flex-bundles__summary-row" js-flex-bundles-summary-discount-row style="display: none;">
+      <span class="flex-bundles__summary-label" id="discount-label-{{ block.id }}" js-flex-bundles-discount-label
+        >Discount</span
+      >
+      <span
+        class="flex-bundles__summary-value flex-bundles__summary-value--discount"
+        aria-labelledby="discount-label-{{ block.id }}"
+        js-flex-bundles-summary-discount
+      ></span>
+    </div>
+    <div class="flex-bundles__summary-row flex-bundles__summary-row--total">
+      <span class="flex-bundles__summary-label" id="total-label-{{ block.id }}">Total</span>
+      <span
+        class="flex-bundles__summary-value"
+        aria-labelledby="total-label-{{ block.id }}"
+        js-flex-bundles-summary-total
+      ></span>
+    </div>
+  </div>
+  <div class="flex-bundles__summary-empty">
+    <p>{{ block.settings.summary_empty_text | default: "No items in your bundle yet." }}</p>
+  </div>
+</div>

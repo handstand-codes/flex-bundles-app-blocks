@@ -1,0 +1,383 @@
+/*
+    This file contains the base styles for the flex bundles block.
+    It is used to ensure that the block is styled for custom themes.
+    Taken almost directly from the Generated Data Theme from Shopify, with the CSS variables replaced with its defaultvalues.
+*/
+
+/* component-quantity */
+.flex-bundles .quantity {
+  color: rgba(0, 0, 0);
+  position: relative;
+  width: calc(14rem / 1.0 + 1px * 2);
+  display: flex;
+  border-radius: 2px;
+  min-height: calc((1px * 2) + 4.5rem);
+}
+
+.flex-bundles .quantity:after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
+  border: 0.1rem solid transparent;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 100ms ease;
+  z-index: 1;
+}
+
+.flex-bundles .quantity:before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 3px;
+  box-shadow: 0px -12px 5px rgba(0, 0, 0, 0.0);
+  z-index: -1;
+}
+
+.flex-bundles .quantity__input {
+  color: currentColor;
+  font-size: 1.4rem;
+  font-weight: 500;
+  opacity: 0.85;
+  text-align: center;
+  background-color: transparent;
+  border: 0;
+  padding: 0 0.5rem;
+  width: 100%;
+  flex-grow: 1;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.flex-bundles .quantity__button {
+  width: calc(4.5rem / 1.0);
+  flex-shrink: 0;
+  font-size: 1.8rem;
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(0, 0, 0);
+  padding: 0;
+}
+
+.flex-bundles .quantity__button:first-child {
+  margin-left: calc(1px);
+}
+
+.flex-bundles .quantity__button:last-child {
+  margin-right: calc(1px);
+}
+
+.flex-bundles .quantity__button svg {
+  width: 1rem;
+  pointer-events: none;
+}
+
+.flex-bundles .quantity__button:focus-visible,
+.flex-bundles .quantity__input:focus-visible {
+  background-color: rgb(250, 250, 249);
+  z-index: 2;
+}
+
+.flex-bundles .quantity__button:focus,
+.flex-bundles .quantity__input:focus {
+  background-color: rgb(250, 250, 249);
+  z-index: 2;
+}
+
+.flex-bundles .quantity__button:not(:focus-visible):not(.focused),
+.flex-bundles .quantity__input:not(:focus-visible):not(.focused) {
+  box-shadow: inherit;
+  background-color: inherit;
+}
+
+.flex-bundles .quantity__input:-webkit-autofill,
+.flex-bundles .quantity__input:-webkit-autofill:hover,
+.flex-bundles .quantity__input:-webkit-autofill:active {
+  box-shadow: 0 0 0 10rem rgb(250, 250, 249) inset !important;
+  -webkit-box-shadow: 0 0 0 10rem rgb(250, 250, 249) inset !important;
+}
+
+.flex-bundles .quantity__input::-webkit-outer-spin-button,
+.flex-bundles .quantity__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.flex-bundles .quantity__input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+/* Form Elements */
+.flex-bundles .product-form__input {
+    flex: 0 0 100%;
+    padding: 0;
+    margin: 0 0 1.2rem 0;
+    max-width: 44rem;
+    min-width: fit-content;
+    border: none;
+}
+
+.flex-bundles variant-radios,
+.flex-bundles variant-selects {
+    display: block;
+}
+
+.flex-bundles .product-form__input--dropdown {
+    margin-bottom: 1.6rem;
+}
+
+.flex-bundles .product-form__input .form__label {
+    padding-left: 0;
+}
+
+.flex-bundles fieldset.product-form__input .form__label {
+    margin-bottom: 0.2rem;
+}
+
+.flex-bundles .product-form__input input[type='radio'] {
+    clip: rect(0, 0, 0, 0);
+    overflow: hidden;
+    position: absolute;
+    height: 1px;
+    width: 1px;
+}
+
+.flex-bundles .product-form__input input[type='radio'] + label {
+    border: 0px solid rgba(255, 0, 0, 0.0);
+    background-color: rgb(250, 250, 249);
+    color: rgba(0, 0, 0);
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0.7rem 0.5rem 0.2rem 0;
+    padding: 1rem 2rem;
+    font-size: 1.4rem;
+    letter-spacing: 0.1rem;
+    line-height: 1;
+    text-align: center;
+    transition: border 100ms ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.flex-bundles .product-form__input input[type='radio'] + label:before {
+    content: '';
+    position: absolute;
+    top: calc(0px * -1);
+    right: calc(0px * -1);
+    bottom: calc(0px * -1);
+    left: calc(0px * -1);
+    z-index: -1;
+    border-radius: 4px;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.0);
+}
+
+.flex-bundles .product-form__input input[type='radio'] + label:hover {
+    border-color: rgb(0, 0, 0);
+}
+
+.flex-bundles .product-form__input input[type='radio']:checked + label {
+    background-color: rgb(0, 0, 0);
+    color: rgb(250, 250, 249);
+}
+
+.flex-bundles .product-form__input input[type='radio']:not(.disabled) + label > .visually-hidden {
+    display: none;
+}
+
+@media screen and (forced-colors: active) {
+    .flex-bundles .product-form__input input[type=radio]:checked + label {
+        text-decoration: underline;
+    }
+}
+
+.flex-bundles .product-form__input input[type='radio']:checked + label::selection {
+    background-color: rgba(250, 250, 249, 0.3);
+}
+
+.flex-bundles .product-form__input input[type='radio']:disabled + label,
+.flex-bundles .product-form__input input[type='radio'].disabled + label {
+    border-color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.6);
+    text-decoration: line-through;
+}
+
+.flex-bundles .product-form__input input[type='radio'].disabled:checked + label,
+.flex-bundles .product-form__input input[type='radio']:disabled:checked + label {
+    color: rgba(250, 250, 249, 0.6);
+}
+
+.flex-bundles .product-form__input input[type='radio']:focus-visible + label {
+    box-shadow: 0 0 0 0.3rem rgb(250, 250, 249),
+        0 0 0 0.5rem rgba(0, 0, 0, 0.55);
+}
+
+/* Fallback */
+.flex-bundles .product-form__input input[type='radio'].focused + label {
+    box-shadow: 0 0 0 0.3rem rgb(250, 250, 249),
+        0 0 0 0.5rem rgba(0, 0, 0, 0.55);
+}
+
+/* No outline when focus-visible is available in the browser */
+.no-js .flex-bundles .product-form__input input[type='radio']:focus:not(:focus-visible) + label {
+    box-shadow: none;
+}
+
+.flex-bundles .product-form__input .select {
+    max-width: 25rem;
+}
+
+/* component-button */
+/* Button - default */
+
+.flex-bundles .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  padding: 0 3rem;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  transition: box-shadow 100ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgba(18, 18, 18, 1);
+  min-width: calc(12rem + 1px * 2);
+  min-height: calc(4.5rem + 1px * 2);
+  border-radius: 3px;
+  position: relative;
+}
+
+.flex-bundles .button:before,
+.flex-bundles .cart__dynamic-checkout-buttons [role='button']:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 3px;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.0);
+}
+
+.flex-bundles .button:after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  left: 1px;
+  z-index: 1;
+  border-radius: 2px;
+  box-shadow: 0 0 0 calc(1px + 0.3px) rgba(255, 255, 255, 0),
+    0 0 0 1px rgba(18, 18, 18, 1);
+  transition: box-shadow 100ms ease;
+}
+
+.flex-bundles .button:not([disabled]):hover::after {
+  --border-offset: 1.3px;
+  box-shadow: 0 0 0 calc(1px + 1.3px) rgba(255, 255, 255, 0),
+    0 0 0 calc(1px + 1px) rgba(18, 18, 18, 1);
+}
+
+.flex-bundles .button--secondary:after {
+  --border-opacity: 1.0;
+}
+
+.flex-bundles .button:focus-visible,
+.flex-bundles .button:focus,
+.flex-bundles .button.focused {
+  outline: 0;
+  box-shadow: 0 0 0 0.3rem rgb(250, 250, 249),
+    0 0 0 0.5rem rgba(0, 0, 0, 0.5),
+    0 0 0.5rem 0.4rem rgba(0, 0, 0, 0.3);
+}
+
+.flex-bundles .button:focus:not(:focus-visible):not(.focused) {
+  box-shadow: inherit;
+}
+
+.flex-bundles .button::selection {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.flex-bundles .button,
+.flex-bundles .button-label {
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+  line-height: calc(1 + 0.2 / 1.0);
+}
+
+.flex-bundles .button--tertiary {
+  font-size: 1.2rem;
+  padding: 1rem 1.5rem;
+  min-width: calc(9rem + 1px * 2);
+  min-height: calc(3.5rem + 1px * 2);
+}
+
+.flex-bundles .button--small {
+  padding: 1.2rem 2.6rem;
+}
+
+/* Button - other */
+
+.flex-bundles .button:disabled,
+.flex-bundles .button[aria-disabled='true'],
+.flex-bundles .button.disabled,
+.flex-bundles .customer button:disabled,
+.flex-bundles .customer button[aria-disabled='true'],
+.flex-bundles .customer button.disabled,
+.quantity__button.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.flex-bundles .button--full-width {
+  display: flex;
+  width: 100%;
+}
+
+.flex-bundles .button.loading {
+  color: transparent;
+  position: relative;
+}
+
+@media screen and (forced-colors: active) {
+  .flex-bundles .button.loading {
+    color: rgb(0, 0, 0);
+  }
+}
+
+.flex-bundles .button.loading > .loading-overlay__spinner {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.flex-bundles .button.loading > .loading-overlay__spinner .spinner {
+  width: fit-content;
+}
+
+.flex-bundles .button.loading > .loading-overlay__spinner .path {
+  stroke: rgb(255, 255, 255);
+}

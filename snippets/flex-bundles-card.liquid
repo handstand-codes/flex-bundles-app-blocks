@@ -1,0 +1,118 @@
+<flex-bundles-product class="flex-bundles__component flex-bundles__component--{{ block.settings.card_layout }}" data-product-id="{{ component.id }}" data-component-id="{{ component_id }}" js-flex-bundles-product>
+    {% if block.settings.show_image %}
+      <div class="flex-bundles__image-container">
+        <div class="flex-bundles__image" data-product-id="{{ component.id }}" js-flex-bundles-product-image>
+        {{ component.featured_image | image_url: width: 1000 | image_tag }}
+        </div>
+      </div>
+    {% endif %}
+    <div class="flex-bundles__component-info">
+      <div>
+        <h2 class="flex-bundles__component-title">
+          {{ component.title }}
+          {% if config.bundle_type == 'fixed-variant' %}
+            {% assign matched_variant = component.variants | where: 'id', variant_id | first %}
+            {% if matched_variant and matched_variant.title != 'Default Title' %}
+              <span class="flex-bundles__component-variant" aria-label="Selected variant">- {{ matched_variant.title }}</span>
+            {% endif %}
+          {% endif %}
+        </h2>
+        <div class="flex-bundles__component-price">
+          {% if block.settings.show_price %}
+            <s js-flex-bundles-product-price-original class='flex-bundles__component-price-original'></s>
+            <span js-flex-bundles-product-price-discounted class='flex-bundles__component-price-discounted'>{{ component.price | money }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if block.settings.show_quantity %}
+        {% if config.bundle_type == 'dynamic' or config.advanced_settings.allow_quantity_adjustments %}
+          <flex-bundles-quantity-input class="quantity">
+            <!-- Minus button -->
+          <button class="quantity__button no-js-hidden" name="minus" type="button" js-flex-bundles-component-quantity-minus>
+            &minus;
+          </button>
+          
+          <!-- Input field -->
+          <input
+            class="quantity__input"
+            type="number"
+            name="flex-bundles-component-quantity[{{ component.id }}]"
+            step="1"
+            value="1"
+            min="1"
+            autocomplete="off"
+          />
+          
+          <!-- Plus button -->
+          <button class="quantity__button no-js-hidden" name="plus" type="button" js-flex-bundles-component-quantity-plus>
+            &plus;
+          </button>
+          </flex-bundles-quantity-input>
+        {% else %}
+          <div class="flex-bundles__quantity form__label">Quantity: {{ quantity }}</div>
+          <input type="hidden" name="flex-bundles-component-quantity[{{ component.id }}]" value="{{ quantity }}">
+        {% endif %}
+      {% endif %}
+      
+      {% if config.bundle_type != 'fixed-variant' %}
+        <div class="flex-bundles__variants">
+          <flex-bundles-variant-selects
+            data-product-id="{{ component.id }}"
+            data-component-id="{{ component_id }}"
+            data-section-id="bundle"
+            js-flex-bundles-variant-selects
+          >
+            {% for option in component.options_with_values %}
+              <fieldset class="flex-bundles__variant-fieldset product-form__input product-form__input--pill" js-flex-bundles-option-fieldset {% if component.has_only_default_variant %}style="display: none;"{% endif %} data-option='{{ option.name }}'>
+                <legend class="flex-bundles__variant-label form__label">{{ option.name }}{% for value in option.values %}{% if forloop.first %}: <span js-flex-bundles-variant-option-value>{{ value }}</span>{% endif %}{% endfor %}</legend>
+                {% for value in option.values %}
+                  {% liquid
+                    assign option_disabled = true
+                    for variant in component.variants
+                      if variant.available and variant.options contains value
+                        assign option_disabled = false
+                        break
+                      endif
+                    endfor
+                  %}
+                  
+                  {% capture input_id %}bundle-{{ component.id }}-{{ option.position }}-{{ forloop.index0 }}-{{ component_id }}{% endcapture %}
+                  {% capture input_name %}{{ component.id }}-{{ option.name }}-{{ option.position }}-{{ component_id }}{% endcapture %}
+                  
+                  <input
+                    type="radio"
+                    id="{{ input_id }}"
+                    name="{{ input_name | escape }}"
+                    value="{{ value | escape }}"
+                    {% if forloop.first %}checked{% endif %}
+                    class="flex-bundles__variant-input{% if option_disabled %} disabled{% endif %}"
+                    data-option-position="{{ option.position }}"
+                    {% if option_disabled %}aria-disabled="true"{% endif %}
+                    autocomplete="off"
+                    js-flex-bundles-variant-option
+                  >
+                  
+                  <label for="{{ input_id }}" class="flex-bundles__variant-option">
+                    {{ value }}
+                    {% if option_disabled %}
+                      <span class="visually-hidden">Sold Out</span>
+                    {% endif %}
+                  </label>
+                {% endfor %}
+              </fieldset>
+            {% endfor %}
+            
+            <input type='checkbox' name='flex-bundles-component-bundle-toggle' id='flex-bundles-component-bundle-toggle-{{ block.id }}-{{ step.id }}-{{ component.id }}' class='flex-bundles__component-bundle-toggle' value='{{ component.id }}' js-flex-bundles-component-bundle-toggle {% if config.bundle_type != 'dynamic' %}style="display: none;" checked{% endif %} autocomplete="off">
+            <label for='flex-bundles-component-bundle-toggle-{{ block.id }}-{{ step.id }}-{{ component.id }}' class='button flex-bundles__component-bundle-toggle-label' {% if config.bundle_type != 'dynamic' %}style="display: none;"{% endif %}>
+              <span class='flex-bundles__component-bundle-toggle-label--add'>{{ block.settings.button_text_add | default: 'Add to bundle' }}</span>
+              <span class='flex-bundles__component-bundle-toggle-label--remove'>{{ block.settings.button_text_remove | default: 'Remove from bundle' }}</span>
+            </label>
+            
+          </flex-bundles-variant-selects>
+        </div>
+      {% endif %}
+      
+    </div>
+
+  </flex-bundles-product>

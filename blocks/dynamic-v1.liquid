@@ -1,0 +1,490 @@
+{% assign config = product.metafields.flex_bundles.config.value %}
+{% assign steps = config.steps %}
+
+{% capture flex_bundles_notice %}
+  {% if request.design_mode %}
+    {% render 'flex-bundles-notice', type: 'Dynamic Bundle' %}
+  {% endif %}
+{% endcapture %}
+
+{%- capture selector -%}#flex-bundles-{{ block.id }}{%- endcapture -%}
+{%- capture custom_code -%}
+  {{ block.settings.custom_code | replace: 'selector', selector }}
+{%- endcapture -%}
+
+{% if config and config.active %}
+  {% if config.bundle_type == 'dynamic' %}
+    <div id="flex-bundles-{{ block.id }}">
+
+      {% comment %}
+        note: capture all the products data in one json object
+      {% endcomment %}
+
+      {% assign first_entry = true %}
+      {% capture flex_bundles_products_data %}
+        {%- for step_ref in steps -%}
+          {% assign step = collections[step_ref.handle] %}
+          {%- for component in step.products -%}
+            {%- if first_entry -%}{%- assign first_entry = false -%}{%- else -%},{%- endif -%}
+            "{{ component.id }}": {{ component | json }}
+          {%- endfor -%}
+        {%- endfor -%}
+      {% endcapture %}
+
+      {% capture flex_bundles_collections_data %}
+        {%- for step_ref in steps -%}
+          {% assign step = collections[step_ref.handle] %}
+          "{{ step.id }}": {
+            {%- assign first_entry = true -%}
+            {%- for component in step.products -%}
+              {%- if first_entry -%}{%- assign first_entry = false -%}{%- else -%},{%- endif -%}
+              "{{ component.id }}": true
+            {%- endfor -%}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      {% endcapture %}
+      
+      <script type="application/json" js-flex-bundles-data>
+        {
+          "products": {
+            {{ flex_bundles_products_data }}
+          },
+          "collections": {
+            {{ flex_bundles_collections_data }}
+          },
+          "config": {{ config | json }},
+          "parent": {{ product | json }}
+        }
+      </script>
+
+      {% if block.settings.apply_base_styles %}
+        {{ 'flex-bundles-base.css' | asset_url | stylesheet_tag }}
+      {% endif %}
+
+      {{ 'flex-bundles.css' | asset_url | stylesheet_tag }}
+
+      <style>
+        #flex-bundles-{{ block.id }} {
+          --flex-bundles-image-width: {{ block.settings.image_width }}%;
+          --flex-bundles-image-aspect-ratio: {{ block.settings.image_aspect_ratio }};
+          --flex-bundles-header-spacing: {{ block.settings.header_spacing }}px;
+          --flex-bundles-component-spacing: {{ block.settings.component_spacing }}px;
+          --flex-bundles-summary-spacing: {{ block.settings.summary_spacing }}px;
+          --flex-bundles-button-spacing: {{ block.settings.button_spacing }}px;
+          --flex-bundles-products-per-row-desktop: {{ block.settings.products_per_row_desktop }};
+          --flex-bundles-products-per-row-mobile: {{ block.settings.products_per_row_mobile }};
+        }
+        #flex-bundles-{{ block.id }} {
+          padding-top: {{ block.settings.padding_top | times: 0.75 | round: 0 }}px;
+          padding-bottom: {{ block.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+        }
+        @media screen and (min-width: 750px) {
+          #flex-bundles-{{ block.id }} {
+            padding-top: {{ block.settings.padding_top }}px;
+            padding-bottom: {{ block.settings.padding_bottom }}px;
+          }
+        }
+      </style>
+      
+      <div class="flex-bundles flex-bundles--dynamic flex-bundles--{{ block.settings.layout_style }}">
+        <div class="flex-bundles__header">
+          {% if block.settings.show_title %}
+            <h1 class="flex-bundles__title">
+              {% if config.settings.title != blank %}
+                {{ config.settings.title }}
+              {% else %}
+                {{ product.title }}
+              {% endif %}
+            </h1>
+          {% endif %}
+          {% if block.settings.description != blank %}
+            <div class="flex-bundles__description">
+              {{ block.settings.description }}
+            </div>
+          {% endif %}
+        </div>
+
+        <flex-bundles-form id="flex-bundles-form-{{ block.id }}" js-flex-bundles-form data-block-id="{{ block.id }}" class="flex-bundles__form">
+          <form method="post" action="/cart/add" id="flex-bundles-form-element-{{ block.id }}" aria-label="Bundle product selection form" autocomplete="off">
+
+            <div class="flex-bundles__container">
+              <div class="flex-bundles__steps">
+                {% for step_ref in steps %}
+                  {% assign step = collections[step_ref.handle] %}
+                  <div class="flex-bundles__step">
+                    {% if block.settings.step_title != blank %}
+                      <h2 class="flex-bundles__step-title">{{ block.settings.step_title | replace: '$INDEX', forloop.index | replace: '$COLLECTION_TITLE', step.title }}</h2>
+                    {% endif %}
+                    {% if block.settings.layout_style == 'carousel' %}
+                      <div class="flex-bundles__slider">
+                        <ul role="list">
+                        {% for component in step.products %}
+                          <li>
+                            {% assign component_id = step.id | append: '-' | append: component.id %}
+                            {% render 'flex-bundles-card', component: component, block: block, config: config, step: step, component_id: component_id %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    {% else %}
+                      <div class="flex-bundles__grid">
+                        {% for component in step.products %}
+                          {% assign component_id = step.id | append: '-' | append: component.id %}
+                          {% render 'flex-bundles-card', component: component, block: block, config: config, step: step, component_id: component_id %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div>
+                <div class="flex-bundles__checkout">                
+                  {% render 'flex-bundles-summary', block: block %}
+                  <div class="flex-bundles__actions">
+                    <button type="submit" class="flex-bundles__button button button--primary" id="flex-bundles-add-to-cart" js-flex-bundles-add-to-cart>
+                      <span>Add to Cart</span>
+                    </button>
+                  </div>
+
+                  <div class="flex-bundles__requirements" js-flex-bundles-requirements>
+                    {% capture requirements %}
+                    {% for step in steps %}
+                      {% assign step_collection = collections[step.handle] %}
+                      {% if step.required_products.enabled and step.required_products.count > 0 %}
+                        <li>This bundle requires {{ step.required_products.count }} product{% if step.required_products.count > 1 %}s{% endif %} from the {{ step_collection.title }} collection.</li>
+                      {% endif %}
+                      {% endfor %}
+                    {% endcapture %}
+                    {% if requirements != blank %}
+                      <ul>
+                        {{ requirements }}
+                      </ul>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          
+            
+          </form>
+        </flex-bundles-form>
+      </div>
+
+      <script src="{{ 'flex-bundles.js' | asset_url }}" defer></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          if (!window.FlexBundles?.initBundle) {
+            console.error('FlexBundles not loaded or initBundle not available');
+            return;
+          }
+          
+          try {
+            window.FlexBundles.initBundle('{{ block.id }}');
+
+            {% if block.settings.post_add_to_cart_js %}
+              document.addEventListener(window.FlexBundles.EVENTS.AFTER_ADD_TO_CART, function(event) {
+                (function() {
+                  {{ block.settings.post_add_to_cart_js }}
+                })();
+              });
+            {% endif %}
+
+          } catch (e) {
+            console.error('Error initializing bundle:', e);
+          }
+          
+        });
+      </script>
+
+      {{ custom_code }}
+
+    </div>
+  {% else %}
+    {{ flex_bundles_notice }}
+  {% endif %}
+{% else %}
+  {{ flex_bundles_notice }}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Dynamic Bundle (v1.0.0)",
+  "target": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "apply_base_styles",
+      "label": "Apply base styles",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Title Area"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Choose your components</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Layout style",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "carousel"
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_desktop",
+      "label": "Products per row on desktop",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 products"
+        },
+        {
+          "value": "3",
+          "label": "3 products"
+        },
+        {
+          "value": "4",
+          "label": "4 products"
+        }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Products per row on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 product"
+        },
+        {
+          "value": "2",
+          "label": "2 products"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "liquid",
+      "id": "step_title",
+      "label": "Step title",
+      "default": "Step $INDEX: $COLLECTION_TITLE",
+      "info": "Use variables $INDEX and $COLLECTION_TITLE to insert the step number and collection title respectively. Leave blank to hide."
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "select",
+      "id": "card_layout",
+      "label": "Card layout",
+      "options": [
+        {
+          "value": "inline",
+          "label": "Inline"
+        },
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Show quantity",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 30,
+      "unit": "%",
+      "info": "This setting only affects images in the inline card layout."
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        {
+          "value": "1/1",
+          "label": "1:1 (Square)"
+        },
+        {
+          "value": "4/3",
+          "label": "4:3"
+        },
+        {
+          "value": "16/9",
+          "label": "16:9"
+        },
+        {
+          "value": "3/4",
+          "label": "3:4"
+        },
+        {
+          "value": "9/16",
+          "label": "9:16"
+        }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "text",
+      "id": "button_text_add",
+      "label": "Add to bundle button text",
+      "default": "Add to bundle"
+    },
+    {
+      "type": "text",
+      "id": "button_text_remove",
+      "label": "Remove from bundle button text",
+      "default": "Remove from bundle"
+    },
+    {
+      "type": "header",
+      "content": "Summary Box"
+    },
+    {
+      "type": "text",
+      "id": "summary_box_title",
+      "label": "Summary box title",
+      "default": "Review your bundle"
+    },
+    {
+      "type": "text",
+      "id": "summary_empty_text",
+      "label": "Summary empty text",
+      "default": "No items in your bundle yet."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "header",
+      "content": "Additional Options"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_code",
+      "label": "Custom code",
+      "default": "<style>\nselector .flex-bundles {\n  display: block;\n}\n</style>\n\n<script>\n(() => {\n  const flexBundlesBlock = document.querySelector('selector');\nconsole.log('Flex Bundles is loaded! 💪');\n})();\n</script>",
+      "info": "Add custom code to this bundle block. Use \"selector\" as a placeholder to automatically scope styles to this specific block. You can inspect the HTML structure using your browser's developer tools or [view the source code](https://github.com/flex-bundles).",
+    },
+    {
+      "type": "liquid",
+      "id": "post_add_to_cart_js",
+      "label": "Post add to cart JS",
+      "info": "This code will run after a successful add to cart. The cart response data is available via the event.detail.cartData object.",
+      "default": "window.location.href = '/cart';"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Space after header",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "component_spacing",
+      "label": "Space between components",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_spacing",
+      "label": "Space before summary",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_spacing",
+      "label": "Space before button",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

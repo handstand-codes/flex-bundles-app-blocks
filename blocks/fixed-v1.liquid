@@ -1,0 +1,465 @@
+{% assign config = product.metafields.flex_bundles.config.value %}
+{% assign components = config.components %}
+
+{% capture flex_bundles_notice %}
+  {% if request.design_mode %}
+    {% render 'flex-bundles-notice', type: 'Fixed Bundle' %}
+  {% endif %}
+{% endcapture %}
+
+{%- capture selector -%}#flex-bundles-{{ block.id }}{%- endcapture -%}
+{%- capture custom_code -%}
+  {{ block.settings.custom_code | replace: 'selector', selector }}
+{%- endcapture -%}
+
+{% if config and config.active %}
+  {% if config.bundle_type == 'fixed-variant' or config.bundle_type == 'fixed-product' %}
+    <div id="flex-bundles-{{ block.id }}">
+
+      {% comment %}
+        note: the variants data and components are captured this way to minimize the number of all_products uses
+      {% endcomment %}
+      {% assign flex_bundles_products_data = '' %}
+      {% assign flex_bundles_components = '' %}
+
+      {% for component_ref in components %}
+        {% assign component = all_products[component_ref.product_handle] %}
+        {% comment %}
+          capture the variants data for the component
+        {% endcomment %}
+        {%- capture flex_bundles_products_data -%}
+          {{ flex_bundles_products_data }}
+          "{{ component.id }}": {{ component | json }}{%- unless forloop.last -%},{%- endunless -%}
+        {%- endcapture -%}
+
+        {% comment %}
+          capture the component cards
+        {% endcomment %}
+        {%- capture flex_bundles_components -%}
+          {{ flex_bundles_components }}
+
+          {% if block.settings.layout_style == 'carousel' %}<li>{% endif %}
+            {% assign variant_id = component_ref.variant_id | plus: 0 %}
+            {% render 'flex-bundles-card', component: component, block: block, config: config, quantity: component_ref.quantity, component_id: component_ref.component_id, variant_id: variant_id %}
+          {% if block.settings.layout_style == 'carousel' %}</li>{% endif %}
+
+        {%- endcapture -%}
+      {% endfor %}
+
+      <script type="application/json" js-flex-bundles-data>
+        {
+          "products": {
+            {{ flex_bundles_products_data }}
+          },
+          "config": {{ config | json }},
+          "parent": {{ product | json }}
+        }
+      </script>
+
+      {% if block.settings.apply_base_styles %}
+        {{ 'flex-bundles-base.css' | asset_url | stylesheet_tag }}
+      {% endif %}
+
+      {{ 'flex-bundles.css' | asset_url | stylesheet_tag }}
+
+      <style>
+        #flex-bundles-{{ block.id }} {
+          --flex-bundles-image-width: {{ block.settings.image_width }}%;
+          --flex-bundles-image-aspect-ratio: {{ block.settings.image_aspect_ratio }};
+          --flex-bundles-header-spacing: {{ block.settings.header_spacing }}px;
+          --flex-bundles-component-spacing: {{ block.settings.component_spacing }}px;
+          --flex-bundles-summary-spacing: {{ block.settings.summary_spacing }}px;
+          --flex-bundles-button-spacing: {{ block.settings.button_spacing }}px;
+          --flex-bundles-products-per-row-desktop: {{ block.settings.products_per_row_desktop }};
+          --flex-bundles-products-per-row-mobile: {{ block.settings.products_per_row_mobile }};
+        }
+        #flex-bundles-{{ block.id }} {
+          padding-top: {{ block.settings.padding_top | times: 0.75 | round: 0 }}px;
+          padding-bottom: {{ block.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+        }
+        @media screen and (min-width: 750px) {
+          #flex-bundles-{{ block.id }} {
+            padding-top: {{ block.settings.padding_top }}px;
+            padding-bottom: {{ block.settings.padding_bottom }}px;
+          }
+        }
+      </style>
+
+      <div class="flex-bundles flex-bundles--fixed">
+        <div class="flex-bundles__header">
+          {% if block.settings.show_title %}
+            <h1 class="flex-bundles__title">
+              {% if config.settings.title != blank %}
+                {{ config.settings.title }}
+              {% else %}
+                {{ product.title }}
+              {% endif %}
+            </h1>
+          {% endif %}
+          {% if block.settings.show_price_in_title %}
+            <div class="flex-bundles__price-title">
+              <s class="flex-bundles__original-price" js-flex-bundles-original-price></s>
+              <span class="flex-bundles__discounted-price" js-flex-bundles-discounted-price></span>
+            </div>
+          {% endif %}
+          {% if block.settings.show_savings_in_title %}
+            <div class="flex-bundles__savings-title">
+              <span class="flex-bundles__savings" js-flex-bundles-savings></span>
+            </div>
+          {% endif %}
+        </div>
+
+        <flex-bundles-form id="flex-bundles-form-{{ block.id }}" js-flex-bundles-form data-block-id="{{ block.id }}" class="flex-bundles__form">
+          <form method="post" action="/cart/add" id="flex-bundles-form-element-{{ block.id }}" aria-label="Bundle product selection form" autocomplete="off">
+            <div class="flex-bundles__container">
+              {% if block.settings.layout_style == 'carousel' %}
+                <div class="flex-bundles__slider">
+                  <ul role="list">
+                    {{ flex_bundles_components }}
+                  </ul>
+              </div>
+              {% else %}
+                <div class="flex-bundles__grid">
+                  {{ flex_bundles_components }}
+                </div>
+              {% endif %}
+
+              <div>
+                <div class="flex-bundles__checkout">                
+                  {% if block.settings.show_summary_box %}
+                    {% render 'flex-bundles-summary', block: block %}
+                  {% endif %}
+                  
+                  <div class="flex-bundles__actions">
+                    <button type="submit" class="flex-bundles__button button button--primary" id="flex-bundles-add-to-cart" js-flex-bundles-add-to-cart>
+                      <span>{{ block.settings.button_text }}</span>
+                      <span class="flex-bundles__button-pricing" {% unless block.settings.show_price_in_button %}style="display: none;"{% endunless %}>
+                        <s js-flex-bundles-original-price></s>
+                        <span js-flex-bundles-discounted-price></span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </flex-bundles-form>
+      </div>
+          
+      <script src="{{ 'flex-bundles.js' | asset_url }}" defer></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          if (!window.FlexBundles?.initBundle) {
+            console.error('FlexBundles not loaded or initBundle not available');
+            return;
+          }
+          
+          try {
+            window.FlexBundles.initBundle('{{ block.id }}');
+
+            {% if block.settings.post_add_to_cart_js %}
+              document.addEventListener(window.FlexBundles.EVENTS.AFTER_ADD_TO_CART, function(event) {
+                (function() {
+                  {{ block.settings.post_add_to_cart_js }}
+                })();
+              });
+            {% endif %}
+
+          } catch (e) {
+            console.error('Error initializing bundle:', e);
+          }
+          
+        });
+      </script>
+
+      {{ custom_code }}
+
+    </div>
+  {% else %}
+    {{ flex_bundles_notice }}
+  {% endif %}
+{% else %}
+  {{ flex_bundles_notice }}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Fixed Bundle (v1.0.0)",
+  "target": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "apply_base_styles",
+      "label": "Apply base styles",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Title Area"
+    },
+    { 
+      "type": "checkbox", 
+      "id": "show_title", 
+      "label": "Show title",
+      "default": true
+    },
+    { 
+      "type": "checkbox", 
+      "id": "show_price_in_title", 
+      "label": "Show price",
+      "default": true
+    },
+    { 
+      "type": "checkbox", 
+      "id": "show_savings_in_title", 
+      "label": "Show savings",
+      "default": true,
+      "info": "Does not show if discount is on a per-product basis."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_style",
+      "label": "Layout style",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_desktop",
+      "label": "Products per row on desktop",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 products"
+        },
+        {
+          "value": "3",
+          "label": "3 products"
+        },
+        {
+          "value": "4",
+          "label": "4 products"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Products per row on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 product"
+        },
+        {
+          "value": "2",
+          "label": "2 products"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "select",
+      "id": "card_layout",
+      "label": "Card layout",
+      "options": [
+        {
+          "value": "inline",
+          "label": "Inline"
+        },
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Show quantity",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "default": 30,
+      "unit": "%",
+      "info": "This setting only affects images in the inline card layout."
+    },
+    {
+      "type": "select",
+      "id": "image_aspect_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        {
+          "value": "1/1",
+          "label": "1:1 (Square)"
+        },
+        {
+          "value": "4/3",
+          "label": "4:3"
+        },
+        {
+          "value": "16/9",
+          "label": "16:9"
+        },
+        {
+          "value": "3/4",
+          "label": "3:4"
+        },
+        {
+          "value": "9/16",
+          "label": "9:16"
+        }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "header",
+      "content": "Summary Box"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_summary_box",
+      "label": "Show summary box",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "summary_box_title",
+      "label": "Summary box title",
+      "default": "Review your bundle"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price_in_button",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "header",
+      "content": "Additional Options"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_code",
+      "label": "Custom code",
+      "default": "<style>\nselector .flex-bundles {\n  display: block;\n}\n</style>\n\n<script>\n(() => {\n  const flexBundlesBlock = document.querySelector('selector');\nconsole.log('Flex Bundles is loaded! 💪');\n})();\n</script>",
+      "info": "Add custom code to this bundle block. Use \"selector\" as a placeholder to automatically scope styles to this specific block. You can inspect the HTML structure using your browser's developer tools or [view the source code](https://github.com/flex-bundles).",
+    },
+    {
+      "type": "liquid",
+      "id": "post_add_to_cart_js",
+      "label": "Post add to cart JS",
+      "info": "This code will run after a successful add to cart. The cart response data is available via the event.detail.cartData object.",
+      "default": "window.location.href = '/cart';"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "label": "Space after header",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "component_spacing",
+      "label": "Space between components",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "summary_spacing",
+      "label": "Space before summary",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_spacing",
+      "label": "Space before button",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "default": 24,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

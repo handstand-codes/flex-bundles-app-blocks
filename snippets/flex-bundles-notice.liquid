@@ -1,0 +1,53 @@
+<style>
+    .flex-bundles__design-mode-notice {
+        container-type: inline-size;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding: clamp(1.5rem, 6cqi, 3rem);
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .flex-bundles__design-mode-notice-text,
+    .flex-bundles__design-mode-notice-image {
+        width: 100%;  /* Full width by default (stacked) */
+    }
+    
+    @container (min-width: 700px) {
+        .flex-bundles__design-mode-notice-text,
+        .flex-bundles__design-mode-notice-image {
+            width: calc(50% - 1rem);  /* 50% minus half the gap */
+        }
+    }
+    .flex-bundles__design-mode-notice-text p:first-of-type {
+        margin-top: 0;
+    }
+    .flex-bundles__design-mode-notice-text p:last-of-type {
+        margin-bottom: 0;
+    }
+    .flex-bundles__design-mode-notice-image {
+        min-width: 150px;
+        max-width: 100%;
+        flex: 1;
+        border: 5px solid rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+    .flex-bundles__design-mode-notice img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+</style>
+
+<div class='flex-bundles__design-mode-notice'>
+    <div class='flex-bundles__design-mode-notice-text'>
+        <p>The Flex Bundles <strong>{{ type }}</strong> app block is active on this template, but only visible on the parent product's product page. Select the parent bundle product by clicking <i>Change</i> in the product picker.</p>
+        <p><i>Note: This message is not visible on the live theme, only in the Shopify Theme Editor.</i></p>
+    </div>
+    <div class='flex-bundles__design-mode-notice-image'>
+        <img src="https://cdn.shopify.com/s/files/1/0935/4497/2580/files/sample-screenshot.png" alt="Flex Bundles product selection" width="752" height="302">
+    </div>
+</div>

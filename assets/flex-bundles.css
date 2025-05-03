@@ -1,0 +1,342 @@
+/**
+ * Flex Bundles Block Styles
+ * 
+ * Customization Guide:
+ * These styles can be customized using CSS custom properties (variables).
+ * All variables can be overridden at the block level through block settings.
+ * 
+ * Main Customization Points:
+ * 
+ * Layout & Spacing
+ * --flex-bundles-image-width: Width of product images (in %)
+ * --flex-bundles-image-aspect-ratio: Aspect ratio for product images (1/1, 4/3, 16/9, etc.)
+ * --flex-bundles-header-spacing: Spacing between header and components (in px)
+ * --flex-bundles-component-spacing: Spacing between components (in px)
+ * --flex-bundles-summary-spacing: Spacing between summary and components (in px)
+ * --flex-bundles-button-spacing: Spacing between button and summary (in px)
+ * 
+ * Note: All these variables can be configured through the block settings in the theme editor.
+ */
+
+/* Container */
+
+/* Title Area */
+.flex-bundles__title {
+  margin: 0;
+}
+
+.flex-bundles__price-title {
+  margin-top: 0.5rem;
+}
+
+.flex-bundles__form {
+  display: block;
+  margin-top: calc(var(--flex-bundles-header-spacing, 0) * 0.75);
+  container-type: inline-size;
+}
+
+@media screen and (min-width: 1000px) {
+  .flex-bundles__form {
+    margin-top: var(--flex-bundles-header-spacing, 0);
+  }
+}
+
+/* Product Card */
+.flex-bundles__component {
+  display: flex;
+  gap: 2rem;
+}
+
+.flex-bundles--dynamic .flex-bundles__component {
+  position: relative;
+  padding-bottom: 47px;
+  height: 100%;
+}
+
+.flex-bundles__component--stacked {
+  flex-direction: column;
+}
+
+/* Product Image */
+.flex-bundles__image-container {
+  flex: 0 0 var(--flex-bundles-image-width, 30%);
+}
+
+.flex-bundles__image {
+  position: relative;
+  aspect-ratio: var(--flex-bundles-image-aspect-ratio, 1);
+}
+
+.flex-bundles__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+
+.flex-bundles__component-title {
+  margin: 0;
+}
+
+/* Product Info */
+.flex-bundles__component-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Price Display */
+.flex-bundles__component-price {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.flex-bundles__variant-label {
+  font-size: 0.875em;
+}
+
+.flex-bundles__quantity {
+  font-size: 0.875em;
+}
+
+/* Summary Box */
+.flex-bundles__summary {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.flex-bundles__summary-empty {
+  display: none;
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.flex-bundles__checkout:has(.flex-bundles__summary-items[data-empty="true"]) .flex-bundles__summary-title,
+.flex-bundles__checkout:has(.flex-bundles__summary-items[data-empty="true"]) .flex-bundles__summary-items,
+.flex-bundles__checkout:has(.flex-bundles__summary-items[data-empty="true"]) .flex-bundles__summary-totals,
+.flex-bundles__checkout:has(.flex-bundles__summary-items[data-empty="true"]) .flex-bundles__actions {
+  display: none;
+}
+
+.flex-bundles__checkout:has(.flex-bundles__summary-items[data-empty="true"]) .flex-bundles__summary-empty {
+  display: block;
+}
+
+.flex-bundles__summary-title {
+  font-weight: bold;
+  margin: 0;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.flex-bundles__summary-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.flex-bundles__summary-item-title {
+  flex: 1;
+  font-size: 0.875em;
+}
+
+.flex-bundles__summary-item-variant {
+  font-size: 0.75em;
+  opacity: 0.75;
+}
+
+.flex-bundles__summary-item-price {
+  font-weight: 500;
+  text-align: right;
+  font-size: 0.875em;
+}
+
+.flex-bundles__summary-item-discount {
+  font-size: 0.75em;
+}
+
+/* Summary Totals */
+.flex-bundles__summary-totals {
+  padding: 1rem;
+}
+
+.flex-bundles__summary-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-bundles__summary-row--total {
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+/* Add to Cart Button */
+.flex-bundles__button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.flex-bundles__button[data-loading="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.flex-bundles__button-pricing {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.flex-bundles__compare-price {
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+/* Dynamic Bundles */
+.flex-bundles__description p {
+  margin: 0;
+}
+
+.flex-bundles__container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--flex-bundles-summary-spacing, 1rem);
+  container-type: inline-size;
+}
+
+@container (min-width: 1000px) {
+  .flex-bundles__container {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: var(--flex-bundles-summary-spacing, 2rem);
+  }
+}
+
+.flex-bundles__grid {
+  display: grid;
+  gap: calc(var(--flex-bundles-component-spacing, 0) * 0.75);
+  grid-template-columns: repeat(var(--flex-bundles-products-per-row-mobile, 1), 1fr);
+}
+
+@container (min-width: 1000px) {
+  .flex-bundles__grid {
+    grid-template-columns: repeat(var(--flex-bundles-products-per-row-desktop, 3), 1fr);
+    gap: var(--flex-bundles-component-spacing, 0);
+  }
+}
+
+.flex-bundles__slider {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+/* Style the scrollbar track and thumb */
+.flex-bundles__slider::-webkit-scrollbar {
+  height: 4px; /* Thin scrollbar */
+}
+
+.flex-bundles__slider::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.flex-bundles__slider ul {
+  display: flex;
+  gap: var(--flex-bundles-component-spacing);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.flex-bundles__slider ul li {
+  flex: 0 0 auto;
+  width: calc((100% - var(--flex-bundles-component-spacing) * (var(--flex-bundles-products-per-row-mobile) - 1)) / var(--flex-bundles-products-per-row-mobile));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+@container (min-width: 1000px) {
+  .flex-bundles__slider ul li {
+    width: calc((100% - var(--flex-bundles-component-spacing) * (var(--flex-bundles-products-per-row-desktop) - 1)) / var(--flex-bundles-products-per-row-desktop));
+  }
+}
+
+
+.flex-bundles__component-bundle-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.flex-bundles .flex-bundles__component-bundle-toggle-label {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.flex-bundles__component-bundle-toggle:checked + label {
+  opacity: 0.5;
+}
+
+.flex-bundles__component-bundle-toggle:checked + label .flex-bundles__component-bundle-toggle-label--add,
+.flex-bundles__component-bundle-toggle + label .flex-bundles__component-bundle-toggle-label--remove {
+  display: none;
+}
+
+.flex-bundles__component-bundle-toggle:checked + label .flex-bundles__component-bundle-toggle-label--remove {
+  display: block;
+}
+
+.flex-bundles__checkout {
+  position: sticky;
+  top: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--flex-bundles-button-spacing, 24px) * 0.75);
+}
+
+@container (min-width: 1000px) {
+  .flex-bundles__checkout {
+    gap: var(--flex-bundles-button-spacing, 24px);
+  }
+}
+
+.flex-bundles__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+.flex-bundles__step-title {
+  margin: 0 0 1rem 0;
+}
+
+.flex-bundles__requirements {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 1.5rem;
+  font-size: 0.75em;
+}
+
+.flex-bundles__requirements ul {
+  margin: 0;
+  padding: 0 0 0 1rem;
+}
