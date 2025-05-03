@@ -15,11 +15,11 @@ The repository contains two types of blocks:
 ## Directory Structure
 
 ```
-├── blocks/              # Main app blocks
-│   ├── fixed-v1.liquid  # Fixed bundle implementation
+├── blocks/               # Main app blocks
+│   ├── fixed-v1.liquid   # Fixed bundle implementation
 │   └── dynamic-v1.liquid # Dynamic bundle implementation
-├── assets/              # Supporting assets (images, styles, etc.)
-└── snippets/            # Reusable code snippets
+├── assets/               # Supporting assets (images, styles, etc.)
+└── snippets/             # Reusable code snippets
 ```
 
 ## Usage
