@@ -2,6 +2,8 @@
 
 This repository contains the official app blocks used in the Flex Bundles app. These blocks can be directly copied and customized for your own projects, or simply used as a reference.
 
+Demo (password: demo): https://flex-bundles-app.myshopify.com/products/camping-bundle
+
 ## Overview
 
 The repository contains two types of blocks:
